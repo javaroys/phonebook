@@ -21,13 +21,16 @@ const PersonForm = ({ persons, setPersons, setMessage }) => {
       if (window.confirm(`${samePerson.name} is already added to phonebook, replace the old number with a new one?`)) {
         personService
           .update(samePerson.id, personObj)
-          .then(updatedPerson => setPersons(persons.map(person =>
-            updatedPerson.id !== person.id ? person : updatedPerson
-          )))
-          .catch(error => {
-            setMessage(error.response.data.error)
+          .then(updatedPerson => {
+            setPersons(persons.map(person =>
+              updatedPerson.id !== person.id ? person : updatedPerson
+            ))
+            setMessage({ text: `Updated ${updatedPerson.name}`, error: false })
           })
-          
+          .catch(error => {
+            setMessage({ text: error.response.data.error, error: true })
+          })
+
       }
 
     }
@@ -36,12 +39,13 @@ const PersonForm = ({ persons, setPersons, setMessage }) => {
 
       personService.create(personObj)
         .then(addedPerson => {
+          setMessage({ text: `Added ${addedPerson.name}`, error: false })
           setPersons(persons.concat(addedPerson));
           setNewName('')
           setNewNumber('')
         })
         .catch(error => {
-          setMessage(error.response.data.error)
+          setMessage({ text: error.response.data.error, error: true })
         })
     }
   }

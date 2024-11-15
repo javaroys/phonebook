@@ -12,8 +12,8 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [messageText, setMessageText] = useState(null)
 
-  const setMessage = (text) => {
-    setMessageText(text)
+  const setMessage = (message) => {
+    setMessageText(message)
     setTimeout(() => {
       setMessageText(null)
     }, 5000)
@@ -30,7 +30,7 @@ const App = () => {
         setPersons(personsList)
       })
       .catch(error => {
-        setMessage(error.response.data.error)
+        setMessage({ text: error.response.data.error, error: true })
       })
   }, [])
 
@@ -50,11 +50,11 @@ const App = () => {
       })
       .catch(error => {
         if (error.response.status == 404) {
-          setMessage(`${person.name} has already been removed.`)
+          setMessage({ text: `${person.name} has already been removed.`, error: true })
           setPersons(persons.filter(person => person.id !== removedPerson.id))
         }
         else {
-          setMessage(error.response.data.error)
+          setMessage({ text: error.response.data.error, error: true })
         }
       })
   }
