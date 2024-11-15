@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import personService from '../services/person.js';
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, setMessage }) => {
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -24,6 +24,9 @@ const PersonForm = ({ persons, setPersons }) => {
           .then(updatedPerson => setPersons(persons.map(person =>
             updatedPerson.id !== person.id ? person : updatedPerson
           )))
+          .catch(error => {
+            setMessage(error.response.data.error)
+          })
           
       }
 
@@ -36,8 +39,10 @@ const PersonForm = ({ persons, setPersons }) => {
           setPersons(persons.concat(addedPerson));
           setNewName('')
           setNewNumber('')
-        }
-        )
+        })
+        .catch(error => {
+          setMessage(error.response.data.error)
+        })
     }
   }
 

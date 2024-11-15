@@ -8,6 +8,7 @@ import personService from './services/person.js';
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [message, setMessage] = useState(null)
 
   const [filterPerson, setFilter] = useState('')
 
@@ -18,6 +19,9 @@ const App = () => {
     personService.getAll()
     .then(personsList => {
       setPersons(personsList)
+    })
+    .catch(error => {
+      setMessage(error.response.data.error)
     })
   }, [])
     
@@ -35,14 +39,21 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(person => person.id !== removedPerson.id))
         })
+        .catch(error => {
+          setMessage(error.response.data.error)
+        })
       }
+
 
 
   return (
     <div>
+      <div>
+        {message}
+      </div>
       <Filter value={filterPerson} onChange={handleFilter} />
       <h2>Phonebook</h2>
-      <PersonForm persons={persons} setPersons={setPersons} />
+      <PersonForm persons={persons} setPersons={setPersons} setMessage={setMessage} />
       <h2>Numbers</h2>
       <Persons persons={persons} filterPerson={filterPerson} remove={deletePerson} />
     </div>
